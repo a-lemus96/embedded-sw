@@ -1,56 +1,61 @@
 #include "mbed.h"
 
-#define DELAY 2 // delay between sensor readings in seconds
-#define WSTEPS 20 // number of steps in the warble tone
+
+#define PERIOD 0.01 // period of pwm signal in seconds
+
 #define LFREQ 200 // low frequency of warble tone in Hz
 #define HFREQ 1000 // high frequency of warble tone in Hz
+#define WSTEPS 20 // number of steps for warble tone
 
-// define inputs
+#define UP_THRESH 0.9 // upper threshold for tank level
+#define LOW_THRESH 0.1 // lower threshold for tank level
+
+#define DELAY 2 // delay between sensor readings in seconds
+
+// sensor inputs
 AnalogIn tank_sens(p15);
 AnalogIn temp_sens(p16);
 
-// define outputs
+// audiovisual outputs
 PwmOut buzz(p21);
 DigitalOut led(LED1);
 
-// define variables
+// global variables
 float level, temp;
 
 int main() {
-        // set up PWM parameters
-        buzz.period(0.01);
+	// pwm configuration
+        buzz.period(PERIOD);
         buzz = 0;
 
 	while(1) {
-		// read inputs
+		// read measurements
 		level = tank_sens.read();
 		temp = temp_sens.read();
 
 		// check if tank is full
-		if (level > 0.9) {
-                led = 0;  // clear LED
-                buzz = 0;  // clear buzzer
-		}
-        // check if tank level is too low
-		else if (level < 0.1) {
-                // create warble tone
-                // transition from lower freq to high freq tone in 1s
-                // CHECK THIS FOR LOOP INCREMENT
-                for (float i = 1/LFREQ; i > 1/HFREQ; i -= DELAY/2*WSTEPS) {
-                        buzz.period(i);
-                        wait(DELAY)
-                }
-                led = !led;  // toggle LED
-                // transition from high freq to low freq tone in 1s
-                for (float i = 1/HFREQ; i < 1/LFREQ; i += DELAY/2*WSTEPS) {
-                        buzz.period(i);
-                        wait(0.05);
-                }
-                led = !led;  // toggle LED
-	    }
-        else {
-                led = 0;  // clear LED
-                buzz = 0;  // clear buzzer
-                wait(DELAY);
-        }
+		if (level > UP_THRESH) {
+			led = 0; // clear LED
+			switch (temp) {
+				case 0 ... 1/3:
+					// trigger beeping tone
+					break;
+				case 1/3 ... 2/3:
+					// continuous steady tone
+					break;
+				case 2/3 ... 1:
+					// dual tone
+					break;
+				default:
+					// do nothing
+					break;
+			}
+        	// check if tank level is too low
+		else if (level < LOW_THRESH) {
+			// warble tone and flash LED
+	    	}
+        	else {
+			// tank level is OK, reset outputs
+			wait(DELAY);
+        	}
 }
