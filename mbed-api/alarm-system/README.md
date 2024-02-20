@@ -13,4 +13,4 @@ This system is designed to effectively monitor and manage heating tanks in indus
 ## Flow Diagram
 This diagram presents a high-level design approach to help understand the underlying logic of the code in `main.cpp`. However, it is essential to note that specific implementation details may vary from what is depicted in the diagram.
   
-![Tank](https://github.com/a-lemus96/embedded-sw/assets/95151624/99974fbe-a720-4254-a0db-5a7df0cadf19)
+![tank_monitor](https://github.com/a-lemus96/embedded-sw/assets/95151624/54d246b9-b8d7-4fef-bf01-f1453a38f067)
