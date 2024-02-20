@@ -1,61 +1,48 @@
 #include "mbed.h"
 
-
-#define PERIOD 0.01 // period of pwm signal in seconds
-
-#define LFREQ 200 // low frequency of warble tone in Hz
-#define HFREQ 1000 // high frequency of warble tone in Hz
-#define WSTEPS 20 // number of steps for warble tone
-
-#define UP_THRESH 0.9 // upper threshold for tank level
-#define LOW_THRESH 0.1 // lower threshold for tank level
-
-#define DELAY 2 // delay between sensor readings in seconds
+#define THRESH 0.75 // threshold for tank level
 
 // sensor inputs
-AnalogIn tank_sens(p15);
-AnalogIn temp_sens(p16);
+AnalogIn level(p15);
+AnalogIn temp(p16);
 
 // audiovisual outputs
 PwmOut buzz(p21);
 DigitalOut led(LED1);
 
-// global variables
-float level, temp;
+float hival, loval, i, tempval;
 
 int main() {
-	// pwm configuration
-        buzz.period(PERIOD);
-        buzz = 0;
-
+        buzz = 0.5; // set duty cycle
 	while(1) {
-		// read measurements
-		level = tank_sens.read();
-		temp = temp_sens.read();
-
-		// check if tank is full
-		if (level > UP_THRESH) {
-			led = 0; // clear LED
-			switch (temp) {
-				case 0 ... 1/3:
-					// trigger beeping tone
-					break;
-				case 1/3 ... 2/3:
-					// continuous steady tone
-					break;
-				case 2/3 ... 1:
-					// dual tone
-					break;
-				default:
-					// do nothing
-					break;
+		// loop while tank level is low
+		while (level.read() < THRESH) {
+			led = !led; // toggle LED
+			// emit one cycle of warble tone using 20 steps
+			for (i = 0; i < 1; i += 0.05) {
+				// sweep from 100 Hz to 500 Hz
+				buzz.period(0.010 - (0.008*i));
+				wait_ms(50);
 			}
-        	// check if tank level is too low
-		else if (level < LOW_THRESH) {
-			// warble tone and flash LED
-	    	}
-        	else {
-			// tank level is OK, reset outputs
-			wait(DELAY);
-        	}
+		}
+		// tank level is OK
+		led = 0;
+		tempval = temp.read();
+		if (tempval < 0.33) {
+			hival = 0.005; // set 200 Hz as tone
+			loval = 1; // set to inaudible tone 1 Hz
+		}
+		if (tempval > 0.66) {
+			hival = 0.001; // set 1 kHz as tone
+			loval = 0.005; // set 200 Hz as tone
+		}
+		if (tempval > 0.33 && tempval < 0.66){
+			hival = 0.002; // set 500 Hz as tone
+			loval = 0.002; // set 500 Hz as tone
+		}
+		// emit tones
+		speaker.period(hival);
+		wait_ms(500);
+		speaker.period(loval);
+		wait_ms(500);
 }
