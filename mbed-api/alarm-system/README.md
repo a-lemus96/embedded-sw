@@ -1,14 +1,38 @@
 # Heating Tank Monitoring and Alert System
-This system is designed to effectively monitor and manage heating tanks in industrial environments. It utilizes Analog to Digital Conversion (ADC) and Pulse-Width Modulation (PWM) modules for accurate data collection and timely alerts. There are two sensors in the tank, one for temperature and the other for level. 
 
-## Key Features
-* **Dual Sensor Integration**: Temperature and level sensors provide data for monitoring tank conditions.
-* **Alert System**: Different audible tones indicate specific tank states:
-   1) High temperature in a full tank triggers a dual-tone alert.
-   2) Optimal temperature in a full tank results in a continuous steady tone.
-   3) Low temperature in a full tank triggers a single beeping tone.
-   4) Low tank level prompts a warble tone with flashing LED for visibility.
-* **Periodic Monitoring**: Sensors update every two seconds.
+## Description
+This project is designed to monitor the level of a tank and provide audiovisual alerts based on the tank level and temperature readings. It utilizes an mbed microcontroller along with sensor inputs for tank level and temperature, and audiovisual outputs for alerts.
+
+## Components
+- mbed microcontroller
+- Tank level sensor (AnalogIn)
+- Temperature sensor (AnalogIn)
+- Buzzer (PwmOut)
+- LED (DigitalOut)
+
+## Threshold
+- `THRESH`: Threshold value for the tank level, set at 0.75 for this project.
+
+## Functionality
+- Continuously monitors the tank level and temperature.
+- When the tank level is below the threshold, it triggers an audiovisual alert indicating low level.
+- The alert consists of a warble tone that sweeps from 100 Hz to 500 Hz using 20 steps, along with blinking LED.
+- When the tank level is normal, it checks the temperature and emits different tones based on temperature ranges:
+  - If temperature is below 0.33, emits a single beeping tone at 200 Hz.
+  - If temperature is above 0.66, emits a dual tone alert at 200 Hz and 1 kHz.
+  - If temperature is between 0.33 and 0.66, emits a continuous steady tone at 500 Hz.
+- Alerts are accompanied by LED status changes for visual indication.
+
+## Usage
+1. Connect the components as per the pin configuration.
+2. Upload the code to the mbed microcontroller.
+3. Ensure proper threshold value and sensor calibration.
+4. Monitor the tank level and temperature readings along with the audiovisual alerts.
+
+## Notes
+- Ensure proper sensor calibration and threshold setting for accurate alerts.
+- Adjust the code as needed for different threshold values or alert conditions.
+- Test the functionality thoroughly to ensure reliable operation.
 
 ## Flow Diagram
 This diagram presents a high-level design approach to help understand the underlying logic of the code in `main.cpp`. However, it is essential to note that specific implementation details may vary from what is depicted in the diagram.
