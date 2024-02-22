@@ -51,8 +51,18 @@ static int k;
 static float vol;
 static float sp;
 
+// ticker ISR
+void timer_ISR() {
+
+}
+
 
 int main() {
-
-	return 0;
+	timer.attach(&timer_ISR, 0.1); // set timer to interrupt every 0.1s
+	k = 0; // initialize the note index
+	while(1) {
+		vol = volume.read(); // read the volume
+		sp = speed.read(); // read the speed
+		wait(0.1); // wait for 0.1s
+	}
 }
