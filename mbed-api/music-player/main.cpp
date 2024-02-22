@@ -15,7 +15,7 @@
 # define So     0.33
 # define La     0.31
 # define Si     0.3
-# define No     0.0
+# define No     0
 
 // define the beat length as a portion of the note
 # define b1     0.5
@@ -53,7 +53,33 @@ static float sp;
 
 // ticker ISR
 void timer_ISR() {
+	// check if melody is finished
+	if (k < (sizeof(note)/sizeof(int))) {
 
+		// check if the note is a silence
+		if (note[k] == No) {
+			speaker = 0; // silence
+		}
+		else {
+			// play the note
+			speaker.period(0.01 * note[k]);
+			speaker = vol;
+		}
+
+		k++;
+		// set new timer configuration
+		timer.attach(&timer_ISR, ((beat[k]/2) + (sp/2)));
+
+		// set the LEDs
+		red = note[k] // represents the note being played
+		yellow = speaker; // represents the volume
+		blue = sp; // represents the speed
+	}
+	else {
+		// reset the melody
+		k = 0;
+		speaker = 0;
+	}
 }
 
 
