@@ -11,7 +11,7 @@
 
 // display control options
 #define LCD_DISPLAY_ON      0x04 // turn on display
-#define LCD_DISPLAY_OFF     0x00 // turn off display
+#define LCD_DISPLAY_OFF     0x08 // turn off display
 #define LCD_CURSOR_ON       0x02 // show cursor
 #define LCD_CURSOR_OFF      0x00 // hide cursor
 #define LCD_BLINK_ON        0x01 // blink cursor
@@ -22,9 +22,7 @@
 #define LCD_SHIFT_CURSOR    0x00 // shift cursor
 
 // function set options
-#define LCD_8BIT_MODE       0x10 // 8-bit data mode
-#define LCD_4BIT_MODE       0x00 // 4-bit data mode
-#define LCD_2LINE_MODE      0x08 // 2-line display
+#define LCD_8BIT_MODE       0x30 // 8-bit data mode
+#define LCD_4BIT_MODE       0x20 // 4-bit data mode
 #define LCD_1LINE_MODE      0x00 // 1-line display
-#define LCD_5x10_MODE       0x04 // 5x10 font
-#define LCD_5x8_MODE        0x00 // 5x8 font
+#define LCD_5X8_MODE        0x00 // 5x8 font
